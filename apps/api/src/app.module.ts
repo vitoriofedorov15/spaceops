@@ -1,6 +1,9 @@
 import { Controller, Get, Inject, Module } from '@nestjs/common';
 import { Database, DatabaseModule } from './database/database.module';
 import { AuthModule, Public } from './auth/auth.module';
+import { AuditModule } from './audit/audit.module';
+import { UsersModule } from './users/users.module';
+import { SpacesModule } from './spaces/spaces.module';
 @Controller('health')
 class HealthController {
   constructor(@Inject(Database) private db: Database) {}
@@ -12,7 +15,7 @@ class HealthController {
   }
 }
 @Module({
-  imports: [DatabaseModule, AuthModule],
+  imports: [DatabaseModule, AuthModule, AuditModule, UsersModule, SpacesModule],
   controllers: [HealthController],
 })
 export class AppModule {}
