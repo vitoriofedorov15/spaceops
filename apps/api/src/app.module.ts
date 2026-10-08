@@ -7,6 +7,7 @@ import { SpacesModule } from './spaces/spaces.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { EquipmentModule } from './equipment/equipment.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { RelocationsModule } from './relocations/relocations.module';
 @Controller('health')
 class HealthController {
   constructor(@Inject(Database) private db: Database) {}
@@ -18,7 +19,7 @@ class HealthController {
   }
 }
 @Module({
-  imports: [DatabaseModule, AuthModule, AuditModule, UsersModule, SpacesModule, BookingsModule, EquipmentModule, TicketsModule],
+  imports: [DatabaseModule, AuthModule, AuditModule, UsersModule, SpacesModule, BookingsModule, EquipmentModule, TicketsModule, RelocationsModule],
   controllers: [HealthController],
 })
 export class AppModule {}
