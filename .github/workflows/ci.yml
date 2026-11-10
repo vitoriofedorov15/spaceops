@@ -1,0 +1,39 @@
+name: Checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: spaceops
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: spaceops_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U spaceops -d spaceops_test"
+          --health-interval 5s --health-timeout 5s --health-retries 15
+    env:
+      DATABASE_URL: postgres://spaceops:ci_password@localhost:5432/spaceops_test
+      DEMO_PASSWORD: SpaceOps-test-2026!
+      PUBLIC_URL: http://127.0.0.1:5174
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:integration
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-results, path: test-results, retention-days: 7 }
