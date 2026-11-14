@@ -13,15 +13,25 @@ import { AnalyticsModule } from './analytics/analytics.module';
 @Controller('health')
 class HealthController {
   constructor(@Inject(Database) private db: Database) {}
-  @Public()
-  @Get()
-  async health() {
+  @Public() @Get() async health() {
     await this.db.query('SELECT 1');
     return { status: 'ok' };
   }
 }
 @Module({
-  imports: [DatabaseModule, AuthModule, AuditModule, UsersModule, SpacesModule, BookingsModule, EquipmentModule, TicketsModule, RelocationsModule, NotificationsModule, AnalyticsModule],
+  imports: [
+    DatabaseModule,
+    AuditModule,
+    AuthModule,
+    UsersModule,
+    SpacesModule,
+    BookingsModule,
+    EquipmentModule,
+    TicketsModule,
+    RelocationsModule,
+    NotificationsModule,
+    AnalyticsModule,
+  ],
   controllers: [HealthController],
 })
 export class AppModule {}
