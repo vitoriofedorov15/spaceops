@@ -84,11 +84,13 @@ it('signs in from a protected route and clears the session when signing out', as
   expect(screen.queryByRole('link', { name: 'Operations' })).not.toBeInTheDocument();
   client.setQueryData(['bookings', 'mine'], [{ title: 'Private meeting' }]);
   fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
-  expect(
-    await screen.findByRole('heading', { name: 'Sign in to your workspace' }),
-  ).toBeInTheDocument();
-  expect(screen.queryByRole('link', { name: 'Bookings' })).not.toBeInTheDocument();
-  expect(client.getQueryData(['bookings', 'mine'])).toBeUndefined();
+  // Logout can remount the login route while React Query and the router settle.
+  // Resolve the current element on each check instead of retaining a detached node.
+  await waitFor(() => {
+    expect(screen.getByRole('heading', { name: 'Sign in to your workspace' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Bookings' })).not.toBeInTheDocument();
+    expect(client.getQueryData(['bookings', 'mine'])).toBeUndefined();
+  });
 });
 
 it('keeps the login form and explains rejected credentials', async () => {
@@ -125,8 +127,8 @@ it('returns to sign-in when a cached session expires during a background refresh
   await act(async () => {
     await client.invalidateQueries({ queryKey: ['me'] });
   });
-  expect(
-    await screen.findByRole('heading', { name: 'Sign in to your workspace' }),
-  ).toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: 'Sign out' })).not.toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getByRole('heading', { name: 'Sign in to your workspace' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Sign out' })).not.toBeInTheDocument();
+  });
 });
