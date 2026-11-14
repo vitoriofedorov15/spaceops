@@ -199,7 +199,3 @@ Detailed documentation is currently in Russian:
 Docker Compose provides the API, PostgreSQL, migrations, and an nginx frontend. Instructions for your own server are in [DEPLOYMENT.md](docs/DEPLOYMENT.md). Public hosting and a demo video are separate steps; this repository does not imply a hosted public instance.
 
 Local `.env` files, dependencies, build output, and test artifacts are excluded through `.gitignore`.
-
-## License
-
-[MIT](LICENSE).
